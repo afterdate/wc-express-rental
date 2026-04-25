@@ -1,4 +1,5 @@
 -- WC-Express Vermietungssoftware Datenbank-Schema
+-- Führe dies im Supabase SQL Editor aus (https://supabase.com/dashboard/project/bpcpkdnyvtkmuvbmmzeo/sql)
 
 -- Anhänger-Tabelle
 CREATE TABLE IF NOT EXISTS trailers (
@@ -77,35 +78,6 @@ CREATE INDEX idx_bookings_dates ON bookings(start_date, end_date);
 CREATE INDEX idx_bookings_status ON bookings(status);
 CREATE INDEX idx_availability_trailer_id ON availability_blocks(trailer_id);
 CREATE INDEX idx_availability_dates ON availability_blocks(start_date, end_date);
-
--- Funktion zur Verfügbarkeitsprüfung
-CREATE OR REPLACE FUNCTION check_trailer_availability(
-    p_trailer_id UUID,
-    p_start_date DATE,
-    p_end_date DATE
-) RETURNS BOOLEAN AS $$
-DECLARE
-    booking_count INTEGER;
-    block_count INTEGER;
-BEGIN
-    -- Prüfe auf überlappende Buchungen
-    SELECT COUNT(*) INTO booking_count
-    FROM bookings
-    WHERE trailer_id = p_trailer_id
-        AND status IN ('confirmed', 'pending')
-        AND start_date <= p_end_date
-        AND end_date >= p_start_date;
-    
-    -- Prüfe auf Verfügbarkeits-Blocks
-    SELECT COUNT(*) INTO block_count
-    FROM availability_blocks
-    WHERE trailer_id = p_trailer_id
-        AND start_date <= p_end_date
-        AND end_date >= p_start_date;
-    
-    RETURN booking_count = 0 AND block_count = 0;
-END;
-$$ LANGUAGE plpgsql;
 
 -- Beispiel-Daten
 INSERT INTO trailers (name, type, description, price_per_day, capacity, images, features) VALUES
