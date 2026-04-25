@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase, type Trailer } from "@/lib/supabase";
@@ -105,9 +106,9 @@ export default function TrailersPage() {
             <Link href="/about" className="hover:text-blue-200 transition">Über uns</Link>
             <Link href="/contact" className="hover:text-blue-200 transition">Kontakt</Link>
           </nav>
-          <Button variant="secondary" asChild>
-            <Link href="/admin">Admin</Link>
-          </Button>
+          <Link href="/admin">
+            <Button variant="secondary">Admin</Button>
+          </Link>
         </div>
       </header>
 
@@ -188,11 +189,11 @@ export default function TrailersPage() {
                     </span>
                     <span className="text-slate-500 text-sm">/Tag</span>
                   </div>
-                  <Button asChild>
-                    <Link href={`/trailers/${trailer.id}`} className="flex items-center gap-1">
+                  <Link href={`/trailers/${trailer.id}`}>
+                    <Button className="flex items-center gap-1">
                       Details <ArrowRight className="w-4 h-4" />
-                    </Link>
-                  </Button>
+                    </Button>
+                  </Link>
                 </CardFooter>
               </Card>
             ))}
